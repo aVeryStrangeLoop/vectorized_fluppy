@@ -21,13 +21,13 @@ def uf(genome):
   # Utility function that gives the utility of a genome
   return np.max(genome)
 
+vec_uf = np.vectorize(uf,signature='(i)->()')
 
 def social_welfare(population):
   # Takes in a population of grids of size pop_size and returns an array of size pop_size containing social welfare of each grid
   # Algorithm
   # For each grid in population
     # For each cell, sum utilities	    
-  vec_uf = np.vectorize(uf,signature='(i)->()')
   utilities =  vec_uf(population)
   print utilities
   sws = np.sum(utilities,axis=(1,2))
