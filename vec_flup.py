@@ -25,7 +25,7 @@ print test_pop
 
 def uf(res):
   return np.sum(res)
-vec_uf = np.vectorize(uf,signature='(i)->()')
+grid_uf = np.vectorize(uf,signature='(i)->()')
 
 # This function returns the resource and donation vectors after processing the genome (NOTE: Zero task has no resource acquisition)
 def genome_to_res_and_donate(genome):
@@ -39,12 +39,12 @@ def genome_to_res_and_donate(genome):
   donate[genome_neg] += res[genome_neg]*exp_eff
   res[genome_neg] -= res[genome_neg]*exp_eff
   return res,donate/8.
-vec_gtrad = np.vectorize(genome_to_res_and_donate,signature='(i)->(nTasks),(nTasks)')
+grid_gtrad = np.vectorize(genome_to_res_and_donate,signature='(i)->(nTasks),(nTasks)')
 
 
 def grid_sw(grid):
   # Get resource vector for whole grid
-  grid_res,grid_donate = vec_gtrad(grid)
+  grid_res,grid_donate = grid_gtrad(grid)
   #print grid_donate
   grid_donate = np.pad(grid_donate,((1,1),(1,1),(0,0)),'wrap')
   # grid_res_donated contains the unpacked result of grid_donate too be added to each agent's resource reservoir
@@ -53,10 +53,9 @@ def grid_sw(grid):
   grid_donated = convolve(grid_donate,kernel,mode='valid')
   #print grid_donated 
   grid_res = grid_res + grid_donated  
-  return np.sum(vec_uf(grid_res))
-population_sw = np.vectorize(grid_sw,signature='(i,j,k)->()')
- 
+  return np.sum(grid_uf(grid_res))
 
+population_sw = np.vectorize(grid_sw,signature='(i,j,k)->()')
 print population_sw(test_pop)
 
 
