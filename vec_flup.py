@@ -1,14 +1,11 @@
 import numpy as np
 from scipy.signal import convolve
 
-n = 2
-
-nTasks = 5
+n = 2 # grid_size
+nTasks = 5 
 exp_eff = 0.2
 compCap = 3
-
-pop_size = 5
-
+pop_size = 5 # GA population size (to generate fake data)
 # Task to info parameters (info = task_no*alpha+beta)
 alpha = 3.
 beta = 5.
@@ -16,10 +13,10 @@ beta = 5.
 def init_Pop():
   # Returns a population of grids containing nxn agents each having a genome of length compCap  
   population = np.random.randint(nTasks, size=(pop_size,n,n,compCap))
-
   return population
-#  
+
 test_pop = init_Pop()
+print "TEST POPULATION"
 print test_pop
 
 
@@ -56,6 +53,7 @@ def grid_sw(grid):
   return np.sum(grid_uf(grid_res))
 
 population_sw = np.vectorize(grid_sw,signature='(i,j,k)->()')
+print "Social welfare of each grid in population"
 print population_sw(test_pop)
 
 
