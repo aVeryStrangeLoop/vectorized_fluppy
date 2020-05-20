@@ -28,7 +28,7 @@ exp_eff = 0.10
 pop_size = 100
 mutation_prob = 0.1
 crossover_prob = 0.75
-number_of_gen = 100
+number_of_gen = 1000
 
 alpha = 3.
 beta = 5.
@@ -217,7 +217,7 @@ b = genetic_algorithm(a)
 best = []
 
 for i in range(number_of_gen):
-
+    print i
     b = genetic_algorithm(b)
     
     soc = np.asarray(social_welfare(b))
