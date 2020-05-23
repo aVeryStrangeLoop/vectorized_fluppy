@@ -6,14 +6,38 @@ import matplotlib.pyplot as plt
 from scipy.signal import convolve
 
 
-def init_Pop():
+def init_Pop(conf):
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
     population = np.random.randint(nTasks, size=(pop_size,n,n,compCap))
     return population
 
 def uf(res):
     return np.sum(res)
 
-def grid_uf(res_grid):
+def grid_uf(res_grid,conf):
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
     ufs = np.zeros((n,n))
     for i in range(res_grid.shape[0]):
         for j in range(res_grid.shape[1]):
@@ -21,7 +45,19 @@ def grid_uf(res_grid):
     return ufs
 
 # This function returns the resource and donation vectors after processing the genome (NOTE: Zero task has no resource acquisition)
-def genome_to_res_and_donate(genome):
+def genome_to_res_and_donate(genome,conf):
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
     res = np.zeros(nTasks)
     genome_pos = genome[genome>0]
     res[genome_pos] = genome_pos*alpha+beta
@@ -31,17 +67,41 @@ def genome_to_res_and_donate(genome):
     res[genome_neg] -= res[genome_neg]*exp_eff
     return res,donate/8.
 
-def grid_gtrad(grid):
+def grid_gtrad(grid,conf):
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
     res = np.zeros((n,n,nTasks))
     donate = np.zeros((n,n,nTasks))
     for i in range(grid.shape[0]):
         for j in range(grid.shape[1]):
-            res[i,j],donate[i,j] = genome_to_res_and_donate(grid[i,j])
+            res[i,j],donate[i,j] = genome_to_res_and_donate(grid[i,j],conf)
     return res,donate
 
-def grid_sw(grid):
+def grid_sw(grid,conf):
     # Get resource vector for whole grid
-    grid_res,grid_donate = grid_gtrad(grid)
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
+    grid_res,grid_donate = grid_gtrad(grid,conf)
     #print grid_donate
     grid_donate = np.pad(grid_donate,((1,1),(1,1),(0,0)),'wrap')
     # grid_res_donated contains the unpacked result of grid_donate too be added to each agent's resource reservoir
@@ -50,15 +110,39 @@ def grid_sw(grid):
     grid_donated = convolve(grid_donate,kernel,mode='valid')
     #print grid_donated 
     grid_res = grid_res + grid_donated  
-    return np.sum(grid_uf(grid_res))
+    return np.sum(grid_uf(grid_res,conf))
 
-def social_welfare(pop):
+def social_welfare(pop,conf):
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
     sw_ar = np.zeros(pop.shape[0])
     for i in range(pop.shape[0]):
-        sw_ar[i] = grid_sw(pop[i])
+        sw_ar[i] = grid_sw(pop[i],conf)
     return sw_ar
 
-def crossover(parent1, parent2):    
+def crossover(parent1, parent2,conf):    
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
     rand1 = np.random.randint(n)
     rand2 = np.random.randint(n)
     rand3 = np.random.randint(compCap)
@@ -101,7 +185,19 @@ def crossover(parent1, parent2):
     
     return [grid1, grid2]
 
-def mutate(toAppend):
+def mutate(toAppend,conf):
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
     
     a = np.random.rand(n,n,compCap)
     
@@ -113,9 +209,21 @@ def mutate(toAppend):
     
     return c
 
-def genetic_algorithm(population):
+def genetic_algorithm(population,conf):
+    n = conf[0]
+    choice_of_u = conf[1]
+    nTasks = conf[2]
+    compCap = conf[3]
+    insight = conf[4]
+    exp_eff = conf[5]
+    pop_size = conf[6]
+    mutation_prob = conf[7]
+    crossover_prob = conf[8]
+    number_of_gen = conf[9]
+    alpha = conf[10]
+    beta = conf[11]
     
-    fitness_arr = np.asarray(social_welfare(population)) #Returns numpy array of fitness
+    fitness_arr = np.asarray(social_welfare(population,conf)) #Returns numpy array of fitness
     
     inds = fitness_arr.argsort()[::-1] #Gives indices from max to min
     
@@ -131,7 +239,7 @@ def genetic_algorithm(population):
     
     intermediates = population[intermediate_ind]
     
-    temp = np.asarray(social_welfare(intermediates))
+    temp = np.asarray(social_welfare(intermediates,conf))
     
     newpop = []
     
@@ -148,7 +256,7 @@ def genetic_algorithm(population):
     
         if x < crossover_prob:
             
-            grids = crossover(parent1, parent2)
+            grids = crossover(parent1, parent2,conf)
             
             grid1 = grids[0]
             
@@ -165,9 +273,9 @@ def genetic_algorithm(population):
             
             toAppend2 = parent2
             
-        toAppend1 = mutate(toAppend1)
+        toAppend1 = mutate(toAppend1,conf)
         
-        toAppend2 = mutate(toAppend2)
+        toAppend2 = mutate(toAppend2,conf)
         
         newpop.append(toAppend1)
             
@@ -176,10 +284,13 @@ def genetic_algorithm(population):
     return np.asarray(newpop)
 
 def DoRun(n, choice_of_u, nTasks, compCap, insight, exp_eff, pop_size, mutation_prob, crossover_prob, number_of_gen, alpha, beta,save_every):
-    a = init_Pop()
-    b = genetic_algorithm(a)
-    best_sw = []
-    best_grid = []
+    conf = [n,choice_of_u,nTasks,compCap,insight,exp_eff,pop_size,mutation_prob,crossover_prob,number_of_gen,alpha,beta]
+    
+    a = init_Pop(conf)
+    b = genetic_algorithm(a,conf)
+    #best_sw = []
+    #best_grid = []
+
     
     # Create output folder and file
     if not os.path.exists('results'):
@@ -189,8 +300,8 @@ def DoRun(n, choice_of_u, nTasks, compCap, insight, exp_eff, pop_size, mutation_
 
     for i in range(number_of_gen):
         #print i
-        b = genetic_algorithm(b)
-        fitness_arr = np.asarray(social_welfare(b)) #Returns numpy array of fitness
+        b = genetic_algorithm(b,conf)
+        fitness_arr = np.asarray(social_welfare(b,conf)) #Returns numpy array of fitness
         inds = fitness_arr.argsort()[::-1] #Gives indices from max to min
         sortedPop = b[inds] #Sorts population based on fitness from highest to lowest
         outfile.write("%d,%f\n" % (i,fitness_arr.max()))
