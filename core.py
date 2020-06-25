@@ -60,7 +60,7 @@ def genome_to_res_and_donate(genome,conf):
     beta = conf[11]
     res = np.zeros(nTasks)
     genome_pos = genome[genome>0]
-    res[genome_pos] = genome_pos*alpha+beta
+    res[genome_pos] += genome_pos*alpha+beta
     donate = np.zeros(nTasks)
     genome_neg = abs(genome[genome<0])
     donate[genome_neg] += res[genome_neg]*exp_eff
