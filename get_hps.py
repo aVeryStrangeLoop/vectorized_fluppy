@@ -34,11 +34,13 @@ hps_file.write("grid_size,repl,th_max,best_sw,gen_req\n")
 
 for n in n_:
     for repl in range(REPL):
-        
+        print("size = %d, repl = %d" % (n,repl))
+
         conf = [n,choice_of_u,nTasks,compCap,insight,exp_eff,pop_size,mutation_prob,crossover_prob,max_gen,alpha,beta]
         
         theoretical_max = (alpha*(nTasks-1)+beta)*compCap*n*n
-
+        #theoretical_max = 1500
+        print("Theoretical max = %f" % theoretical_max)
         # Generate individual files if required
         outfile = open("results_hps/best_n_"+str(n)+"_"+str(repl)+".csv","w+")
         outfile.write("# nTasks %d\n" % nTasks)
@@ -64,6 +66,7 @@ for n in n_:
             sortedPop = b[inds]
             best_sw = fitness_arr.max()
             outfile.write("%d,%f\n" % (i,best_sw))
+            #print(best_sw)
             if best_sw >= theoretical_max:
                 hps_file.write("%d,%d,%f,%f,%d\n" % (n,repl,theoretical_max,best_sw,i))
                 break
